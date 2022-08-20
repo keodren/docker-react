@@ -1,3 +1,5 @@
+image: docker:latest
+
 services:
   - docker:dind
 
@@ -7,17 +9,25 @@ stages:
 
 build:
   stage: build
-  image: docker:latest
+#  image: docker:latest
   script:
     - echo "Building project..."
     - docker build -t docker-react-project -f Dockerfile.dev .
     - echo "Finished building"
-    - echo "Running tests..."
-    - docker run -e CI=true docker-react-project npm run test
-
-# basic-test:
-#  stage: test
-#  image: docker:latest
-#  script:
+    - echo "Saving image..."
+    - mkdir image
+    - docker save docker-react-project > image/docker-react-project.tar 
 #    - echo "Running tests..."
 #    - docker run -e CI=true docker-react-project npm run test
+  artifacts:
+    paths:
+      - image
+
+ basic-test:
+  stage: test
+#  image: docker:latest
+  script:
+    - echo "Preparing to run tests..."
+    - docker load -i image/docker-react-project.tar
+    - echo "Running tests..."
+    - docker run -e CI=true docker-react-project npm run test
