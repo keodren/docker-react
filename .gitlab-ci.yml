@@ -3,6 +3,7 @@ services:
 
 stages:
   - build
+  - test
 
 build:
   stage: build
@@ -11,3 +12,10 @@ build:
     - echo "Building project..."
     - docker build -t docker-react-project -f Dockerfile.dev .
     - echo "Finished building"
+
+basic-test:
+  stage: test
+  image: docker:latest
+  script:
+    - echo "Running tests..."
+    - docker run -e CI=true docker-react-project npm run test
