@@ -6,4 +6,3 @@ build:
   stage: build
   script:
     - echo "Building project..."
-    - docker build -t docker-react -f Dockerfile.dev .
