@@ -1,8 +1,13 @@
-image: docker:latest
+services:
+  - docker:dind
+
 stages:
   - build
 
 build:
   stage: build
+  image: docker:latest
   script:
     - echo "Building project..."
+    - docker build -t docker-react-project -f Dockerfile.dev .
+    - echo "Finished building"
