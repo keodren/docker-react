@@ -4,11 +4,12 @@ services:
   - docker:dind
 
 stages:
-  - build
+  - build-test
   - test
+  - build-deploy
 
-build:
-  stage: build
+build-test:
+  stage: build-test
 #  image: docker:latest
   script:
     - echo "Building project..."
@@ -31,3 +32,8 @@ basic-test:
     - docker load -i image/docker-react-project.tar
     - echo "Running tests..."
     - docker run -e CI=true docker-react-project npm run test
+
+build-deploy:
+  stage: build-deploy
+  script:
+    - echo "This will build production image"
