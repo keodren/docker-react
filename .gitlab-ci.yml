@@ -40,5 +40,5 @@ build-deploy:
   stage: build-deploy
   script:
     - echo "Building production image..."
-    - docker build -t CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:APP_VERSION .
+    - docker build -t $CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:APP_VERSION .
     - docker image ls
