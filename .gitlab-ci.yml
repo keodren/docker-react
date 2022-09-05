@@ -8,6 +8,9 @@ stages:
   - test
   - build-deploy
 
+variables:
+  APP_VERSION: $CI_PIPELINE_IID
+
 build-test:
   stage: build-test
 #  image: docker:latest
@@ -36,4 +39,6 @@ basic-test:
 build-deploy:
   stage: build-deploy
   script:
-    - echo "This will build production image"
+    - echo "Building production image..."
+    - docker build -t CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:APP_VERSION .
+    - docker image ls
