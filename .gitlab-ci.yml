@@ -7,6 +7,7 @@ stages:
   - build-test
   - test
   - build-deploy
+  - deploy
 
 variables:
   APP_VERSION: $CI_PIPELINE_IID
@@ -45,3 +46,19 @@ build-deploy:
     - docker image ls
     - echo "Pushing image to Gitlab private registry..."
     - docker push --all-tags $CI_REGISTRY_IMAGE
+
+deploy to aws:
+  image:
+    name: amazon/aws-cli:2.7.29
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - aws --version
+    - yum install -y gettext
+    - export DEPLOY_TOKEN=$(echo "$GITLAB_DEPLOY_TOKEN" | tr -d "\n" | base64)
+    - envsubst < templates/Dockerrun.aws.json > Dockerrun.aws.json
+    - envsubst < templates/auth.json > auth.json
+    - cat Dockerrun.aws.json
+    - cat auth.json
+    - aws s3 cp Dockerrun.aws.json s3://$AWS_S3_BUCKET/Dockerrun.aws.json
+    - aws s3 cp auth.json s3://$AWS_S3_BUCKET/auth.json
