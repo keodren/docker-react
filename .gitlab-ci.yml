@@ -52,6 +52,9 @@ deploy to aws:
     name: amazon/aws-cli:2.7.29
     entrypoint: [""]
   stage: deploy
+  variables:
+    APP_NAME: docker-react
+    APP_ENV_NAME: Dockerreact-env
   script:
     - aws --version
     - yum install -y gettext
@@ -60,5 +63,10 @@ deploy to aws:
     - envsubst < templates/auth.json > auth.json
     - cat Dockerrun.aws.json
     - cat auth.json
+    - echo "Copying deployment files to S3..."
     - aws s3 cp Dockerrun.aws.json s3://$AWS_S3_BUCKET/Dockerrun.aws.json
     - aws s3 cp auth.json s3://$AWS_S3_BUCKET/auth.json
+    - echo "Initializing deployment to ElasticBeanStalk..."
+    - aws elasticbeanstalk create-application-version --application-name "$APP_NAME" --version-label $APP_VERSION --source-bundle S3Bucket=$AWS_S3_BUCKET,S3Key=Dockerrun.aws.json
+    - aws elasticbeanstalk update-environment --application-name "$APP_NAME" --version-label $APP_VERSION --environment-name $APP_ENV_NAME
+    - echo "Deployment DONE!"
