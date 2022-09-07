@@ -1,9 +1,9 @@
 name: GitlabSync
 
 on:
-  #- push
-  #- delete
-  push:
+  pull_request:
+    types:
+      - synchronize
     branches:
       - master
 
