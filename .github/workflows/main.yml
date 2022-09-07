@@ -1,10 +1,11 @@
 name: GitlabSync
 
 on:
-  #- push
-  #- delete
   pull_request:
-    branches: ["master"]
+    types:
+      - synchronize
+    branches:
+      - master
 
 jobs:
   sync:
