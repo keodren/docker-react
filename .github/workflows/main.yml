@@ -3,12 +3,14 @@ name: GitlabSync
 on:
   pull_request:
     types:
-      - synchronize
+      - closed
     branches:
       - master
 
 jobs:
   sync:
+    # this job will only run if the PR has been merged, not just 'closed'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
